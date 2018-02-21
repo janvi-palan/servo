@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 use dom::bindings::cell::DomRefCell;
 use dom::bindings::codegen::Bindings::DogeBinding::{DogeMethods, DogeInit, Wrap as DogeWrap};
 use dom::bindings::error::{Error, Fallible};
@@ -10,12 +14,12 @@ use servo_rand;
 use servo_rand::Rng;
 
 
-
 #[dom_struct]
 pub struct Doge {
     reflector_: Reflector,
     such_list: DomRefCell<Vec<DOMString>>,
 }
+
 
 impl Doge {
     pub fn new_inherited() -> Doge {
@@ -46,7 +50,7 @@ impl Doge {
 
 impl DogeMethods for Doge {
     // https://jeenalee.github.io/doge-standard/#dom-doge-append
-    fn Append(&self, word: DOMString) -> () {
+    fn Append(&self, word: DOMString) {
         *&self.such_list.borrow_mut().push(word);
     }
 
@@ -63,25 +67,27 @@ impl DogeMethods for Doge {
             return Ok(list[random_index].clone());
         }
     }
+
+    // https://jeenalee.github.io/doge-standard/
     fn Remove(&self, word: DOMString) -> Fallible<()>{
         let mut isFound = false;
         let mut foundAt = 0;
         let mut thisList = self.such_list.borrow_mut();
-        for index in 0..thisList.len(){
-            if word == thisList[index]{
+        for index in 0..thisList.len() {
+            if word == thisList[index] {
                 isFound = true;
                 foundAt = index;
                 break;
             }
         }
-        if isFound{
+        if isFound {
             thisList.remove(foundAt);
             return Ok(())
-        } else{
+        } else {
             return Err(Error::Type("This word is not present in the list".to_string()));
         }
     }
-
+    // https://jeenalee.github.io/doge-standard/
     fn PrintAll(&self) {
         let list = self.such_list.borrow();
         for x in 0..list.len() {
